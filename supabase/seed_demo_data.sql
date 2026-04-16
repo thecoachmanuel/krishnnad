@@ -37,7 +37,18 @@ VALUES
   ('d5a6b7c8-d9e0-1a2b-3c4d-5e6f7a8b9c0d', 'Ace', 'd1e2f3a4-b5c6-7d8e-9f0a-1b2c3d4e5f60', 24, 'Male', 'Black', 35, 1500000, 'Available', true, true, true, true, true, true, 'European line Doberman.', 'Intense gaze.')
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
 
--- 3. Insert Dog Images (Matching IDs)
+-- 3. Insert Dog Images
+-- Clear existing demo images to allow clean re-run of script
+DELETE FROM dog_images WHERE dog_id IN (
+  'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', 'b2c3d4e5-f6a7-4b6c-8d9e-0f1a2b3c4d5e', 'c3d4e5f6-a7b8-4c9d-8e9f-0a1b2c3d4e5f',
+  'd1a2b3c4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'e2f3c4d5-a6b7-8c9d-0e1f-2a3b4c5d6e7f', 'f3d4e5f6-a7b8-9c0d-e1f2-a3b4c5d6e7f8',
+  'a1d2e3f4-b5c6-7d8e-9f0a-1b2c3d4e5f6a', 'b2a3c4d5-e6f7-8a9b-0c1d-2e3f4a5b6c7d', 'c3a4b5c6-d7e8-9a0b-1c2d-3e4f5a6b7c8d',
+  'd4a5b6c7-d8e9-0a1b-2c3d-4e5f6a7b8c9d', 'e5a6b7c8-d9e0-1a2b-3c4d-5e6f7a8b9c0d', 'f6a7b8c9-d0e1-2a3b-4c5d-6e7f8a9b0c1d',
+  'a7a8b9c0-d1e2-3a4b-5c6d-7e8f9a0b1c2d', 'b8a9b0c1-d2e3-4a5b-6c7d-8e9f0a1b2c3d', 'c9a0b1c2-d3e4-5a6b-7c8d-9e0f1a2b3c4d',
+  'd0a1b2c3-d4e5-6a7b-8c9d-0e1f2a3b4c5d', 'a2a3b4c5-d6e7-8a9b-0c1d-2e3f4a5b6c7d', 'b3a4b5c6-d7e8-9a0b-1c2d-3e4f5a6b7c8d',
+  'c4a5b6c7-d8e9-0a1b-2c3d-4e5f6a7b8c9d', 'd5a6b7c8-d9e0-1a2b-3c4d-5e6f7a8b9c0d'
+);
+
 INSERT INTO dog_images (dog_id, url, is_primary, display_order)
 VALUES
   ('a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?q=80&w=1000', true, 0),
@@ -59,8 +70,7 @@ VALUES
   ('a2a3b4c5-d6e7-8a9b-0c1d-2e3f4a5b6c7d', 'https://images.unsplash.com/photo-1567752881298-894bb81f9379?q=80&w=1000', true, 0),
   ('b3a4b5c6-d7e8-9a0b-1c2d-3e4f5a6b7c8d', 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=1000', true, 0),
   ('c4a5b6c7-d8e9-0a1b-2c3d-4e5f6a7b8c9d', 'https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1000', true, 0),
-  ('d5a6b7c8-d9e0-1a2b-3c4d-5e6f7a8b9c0d', 'https://images.unsplash.com/photo-1605897472359-85e4b9482221?q=80&w=1000', true, 0)
-ON CONFLICT (dog_id, url) DO NOTHING;
+  ('d5a6b7c8-d9e0-1a2b-3c4d-5e6f7a8b9c0d', 'https://images.unsplash.com/photo-1605897472359-85e4b9482221?q=80&w=1000', true, 0);
 
 -- 4. Set Initial Site Settings
 INSERT INTO site_settings (key, value)
