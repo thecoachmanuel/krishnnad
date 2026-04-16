@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/Button"
-import { useToast } from "@/components/ui/Toast" // Assuming toast exists or I'll use standard alert for now if not
+import { useToast } from "@/hooks/use-toast"
 
 declare const PaystackPop: any
 
