@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Krishnnad Syndicate | Premium Dog Breeds",
-  description: "Bred for Excellence. View our collection of premium dog breeds and reserve your best friend today.",
+  description: "Bred for Excellence. View our collection of premium dog breeds and adopt your best friend today.",
 };
 
 import { Toaster } from "@/components/ui/Toaster";

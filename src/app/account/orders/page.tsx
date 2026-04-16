@@ -182,7 +182,7 @@ export default function MyOrdersPage() {
                        </Button>
                        <Link href="/contact">
                           <Button variant="ghost" className="h-12 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-[var(--muted)] hover:text-[var(--foreground)]">
-                             Support Concierge
+                             Contact Us
                           </Button>
                        </Link>
                     </div>

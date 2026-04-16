@@ -191,7 +191,7 @@ export function MobileMenu({
                  {!isAdmin && (
                    <Link href="/dogs" onClick={() => setIsOpen(false)}>
                       <Button className="w-full h-18 rounded-[2rem] bg-[var(--accent)] text-black font-black uppercase tracking-widest text-base shadow-2xl shadow-[var(--accent)]/30 hover:scale-[1.02] transition-transform">
-                         Reserve Puppy <ArrowRight className="ml-2 h-5 w-5" />
+                         Adopt a Puppy <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                    </Link>
                  )}
