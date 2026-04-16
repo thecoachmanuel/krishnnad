@@ -1,189 +1,114 @@
-"use client"
-
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu, X, User, LogOut } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Menu, Heart, User, LayoutDashboard, LogOut } from "lucide-react"
+
 import { Button } from "@/components/ui/Button"
-import { createClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/server"
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/dogs", label: "Dogs Collection" },
-  { href: "/about", label: "Our Story" },
-  { href: "/contact", label: "Contact" },
-]
+export async function Navbar() {
+  const supabase = await createClient()
+  
+  // 1. Fetch Dynamic Branding & User
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: settingsData } = await supabase
+    .from('site_settings')
+    .select('*')
+    .in('key', ['branding'])
 
-export function Navbar() {
-  const [user, setUser] = React.useState<any>(null)
-  const [role, setRole] = React.useState<string | null>(null)
-  const [isOpen, setIsOpen] = React.useState(false)
-  const pathname = usePathname()
+  const branding = settingsData?.find(s => s.key === 'branding')?.value || {}
+  const announcement = branding.announcement || "Experience the pinnacle of dog pedigree."
+  const siteName = branding.siteName || "Krishnnad Syndicate"
 
-  const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    setUser(null)
-    setRole(null)
-    window.location.href = "/"
+  // 2. Fetch User Profile for Role Check
+  let isAdmin = false
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+    isAdmin = profile?.role === "admin"
   }
 
-  React.useEffect(() => {
-    const supabase = createClient()
-    
-    const fetchProfile = async (userId: string) => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single()
-      setRole(data?.role || 'customer')
-    }
-
-    // Initial fetch
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-      if (user) fetchProfile(user.id)
-    })
-
-    // Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
-      if (session?.user) {
-        fetchProfile(session.user.id)
-      } else {
-        setRole(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const isAuthenticated = !!user
-  const isAdmin = role === 'admin'
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="font-display text-2xl font-bold tracking-tight text-[var(--accent)]">
-              Krishnnad
-            </span>
-            <span className="font-display flex h-6 items-center rounded-sm bg-[var(--surface-2)] px-2 text-sm font-semibold tracking-widest text-[var(--foreground)] uppercase">
-              Syndicate
-            </span>
-          </Link>
+    <div className="flex flex-col">
+       {/* Announcement Bar */}
+       {announcement && (
+        <div className="bg-black py-2.5 text-center text-[10px] font-black uppercase tracking-[0.2em] text-[var(--accent)] border-b border-white/5">
+          {announcement}
+        </div>
+       )}
+       
+       <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-10">
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="font-display text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink">
+                {siteName}
+              </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex flex-1 items-center justify-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-[var(--accent)]",
-                  pathname === link.href ? "text-[var(--accent)]" : "text-[var(--foreground)]"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <Link href={isAdmin ? "/admin/dashboard" : "/account/orders"}>
-                  <Button variant="ghost" size="sm" className="gap-2 text-sm font-medium">
-                    <User className="h-4 w-4" /> {isAdmin ? "Admin Dashboard" : "My Account"}
-                  </Button>
-                </Link>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="rounded-full text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10"
-                  onClick={handleLogout}
+            <nav className="hidden md:flex items-center space-x-8">
+              {[
+                { label: "Collection", href: "/dogs" },
+                { label: "Breeds", href: "/dogs?filter=breeds" },
+                { label: "About", href: "/about" },
+                { label: "Contact", href: "/contact" }
+              ].map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-xs font-black uppercase tracking-widest text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
                 >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/login">
-                  <Button variant="ghost" className="text-sm">Log in</Button>
+                  {link.label}
                 </Link>
-                <Link href="/auth/signup">
-                  <Button className="text-sm">Sign Up</Button>
-                </Link>
-              </>
-            )}
+              ))}
+            </nav>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden flex items-center p-2 text-[var(--foreground)]"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--surface)] px-4 py-6 shadow-2xl">
-          <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "block px-2 text-base font-medium hover:text-[var(--accent)] transition-colors",
-                  pathname === link.href ? "text-[var(--accent)]" : "text-[var(--foreground)]"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-[var(--border)]">
-              {isAuthenticated ? (
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2">
+              {user ? (
                 <>
-                  <Link href={isAdmin ? "/admin/dashboard" : "/account/orders"} onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <User className="h-4 w-4" /> {isAdmin ? "Admin Dashboard" : "My Account"}
+                  {isAdmin && (
+                    <Link href="/admin/dashboard">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 text-[var(--accent)] hover:bg-[var(--accent)]/10">
+                        <LayoutDashboard className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  )}
+                  <Link href="/account">
+                    <Button variant="ghost" size="icon" className="h-10 w-10 text-[var(--muted)] hover:text-[var(--foreground)]">
+                      <User className="h-5 w-5" />
                     </Button>
                   </Link>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-start gap-2 text-[var(--muted)] hover:text-[var(--danger)]"
-                    onClick={() => {
-                      setIsOpen(false)
-                      handleLogout()
-                    }}
-                  >
-                    <LogOut className="h-4 w-4" /> Logout
-                  </Button>
+                  <form action="/auth/signout" method="post">
+                    <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 text-[var(--danger)]/50 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10">
+                      <LogOut className="h-5 w-5" />
+                    </Button>
+                  </form>
                 </>
               ) : (
-                <>
-                  <Link href="/auth/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" className="w-full">Log In</Button>
-                  </Link>
-                  <Link href="/auth/signup" onClick={() => setIsOpen(false)}>
-                    <Button className="w-full">Sign Up</Button>
-                  </Link>
-                </>
+                <Link href="/auth/login">
+                  <Button variant="ghost" className="text-xs font-black uppercase tracking-widest px-6">
+                    Sign In
+                  </Button>
+                </Link>
               )}
             </div>
-          </nav>
+
+            <Link href="/dogs">
+              <Button className="hidden sm:flex h-11 px-8 rounded-full border-none bg-black text-white hover:bg-black/90 font-black text-xs uppercase tracking-widest shadow-xl shadow-black/10">
+                Reserve Dog
+              </Button>
+            </Link>
+
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
         </div>
-      )}
-    </header>
+      </header>
+    </div>
   )
 }

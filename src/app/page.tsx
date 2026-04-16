@@ -16,14 +16,24 @@ export const dynamic = 'force-dynamic'
 export default async function HomePage() {
    const supabase = await createClient()
 
-   // 1. Fetch Dynamic Settings
+   // 1. Fetch Dynamic Settings for CMS
    const { data: settingsData } = await supabase
       .from('site_settings')
       .select('*')
-      .in('key', ['heroHeadline', 'heroSubheadline'])
+      .in('key', ['branding', 'home_content', 'testimonials'])
 
-   const headline = settingsData?.find(s => s.key === 'heroHeadline')?.value || "Bred for Excellence."
-   const subheadline = settingsData?.find(s => s.key === 'heroSubheadline')?.value || "Discover your perfect companion from our selection of world-class pedigrees. Raised with uncompromising standards, health-certified, and ready for their forever homes."
+   const branding = settingsData?.find(s => s.key === 'branding')?.value || {}
+   const content = settingsData?.find(s => s.key === 'home_content')?.value || {}
+   const testimonials = settingsData?.find(s => s.key === 'testimonials')?.value || []
+
+   // Fallbacks
+   const headline = content.heroTitle || "Bred for Excellence."
+   const subheadline = content.heroSubtitle || "Discover your perfect companion from our selection of world-class pedigrees. Raised with uncompromising standards, health-certified, and ready for their forever homes."
+   const features = content.features || [
+      { icon: ShieldCheck, title: "Health Guaranteed", desc: "Every puppy undergoes a rigorous veterinary check before leaving our facility." },
+      { icon: Award, title: "Elite Pedigree", desc: "Our bloodlines are imported and carefully selected from world-class sires and dams." },
+      { icon: Heart, title: "Lifetime Support", desc: "We are available 24/7 for guidance throughout your dog's training and life journey." }
+   ]
 
    // 2. Fetch Featured Dogs
    const { data: dogsData } = await supabase
@@ -87,19 +97,22 @@ export default async function HomePage() {
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                  {[
-                     { icon: ShieldCheck, title: "Health Guaranteed", desc: "Every puppy undergoes a rigorous veterinary check before leaving our facility." },
-                     { icon: Award, title: "Elite Pedigree", desc: "Our bloodlines are imported and carefully selected from world-class sires and dams." },
-                     { icon: Heart, title: "Lifetime Support", desc: "We are available 24/7 for guidance throughout your dog's training and life journey." }
-                  ].map((item, i) => (
-                     <div key={i} className="text-center space-y-4 group">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--accent)]/10 text-[var(--accent)] transition-transform group-hover:scale-110">
-                           <item.icon className="h-8 w-8" />
+                  {features.map((item: any, i: number) => {
+                     const IconComponent = 
+                        item.icon === 'ShieldCheck' ? ShieldCheck : 
+                        item.icon === 'Award' ? Award : 
+                        item.icon === 'Heart' ? Heart : ShieldCheck
+                     
+                     return (
+                        <div key={i} className="text-center space-y-4 group">
+                           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--accent)]/10 text-[var(--accent)] transition-transform group-hover:scale-110">
+                              <IconComponent className="h-8 w-8" />
+                           </div>
+                           <h3 className="text-xl font-bold text-[var(--foreground)]">{item.title}</h3>
+                           <p className="text-sm text-[var(--muted)] leading-relaxed">{item.desc}</p>
                         </div>
-                        <h3 className="text-xl font-bold text-[var(--foreground)]">{item.title}</h3>
-                        <p className="text-sm text-[var(--muted)] leading-relaxed">{item.desc}</p>
-                     </div>
-                  ))}
+                     )
+                  })}
                </div>
             </div>
          </section>
@@ -117,21 +130,14 @@ export default async function HomePage() {
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <TestimonialCard
-                     quote="Caesar has been a dream. His temperament is rock solid and the health package was so thorough."
-                     author="Adekunle M."
-                     role="Lagos, Nigeria"
-                  />
-                  <TestimonialCard
-                     quote="The team at Krishnnad made the process so easy. Our Golden Retriever is the heart of our home now."
-                     author="Chibuzor O."
-                     role="Abuja, Nigeria"
-                  />
-                  <TestimonialCard
-                     quote="Buying from a trusted breeder matters. The lifetime support has been invaluable for us."
-                     author="Sarah J."
-                     role="Lagos, Nigeria"
-                  />
+                  {testimonials.map((t: any, i: number) => (
+                     <TestimonialCard
+                        key={i}
+                        quote={t.quote}
+                        author={t.author}
+                        role={t.role}
+                     />
+                  ))}
                </div>
             </div>
          </section>
@@ -146,20 +152,20 @@ export default async function HomePage() {
                   </div>
 
                   <h2 className="font-display text-5xl sm:text-6xl font-black text-black tracking-tight">
-                     Start Your <br /> Journey Today.
+                     {content.ctaTitle || "Start Your Journey Today."}
                   </h2>
                   <p className="text-black/80 max-w-xl mx-auto text-lg font-medium">
-                     We are ready to match you with your perfect lifetime companion. Contact our concierge team today.
+                     {content.ctaSubtitle || "We are ready to match you with your perfect lifetime companion. Contact our concierge team today."}
                   </p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                      <Link href="/contact">
                         <Button size="lg" className="h-16 px-12 text-lg bg-black text-white hover:bg-black/90 border-none">
-                           Contact Krishnnad
+                           {content.heroCtaSecondary || "Contact Krishnnad"}
                         </Button>
                      </Link>
                      <Link href="/dogs">
                         <Button size="lg" variant="outline" className="h-16 px-12 text-lg border-black/20 text-black hover:bg-black/5">
-                           Browse Dogs
+                           {content.heroCtaMain || "Browse Dogs"}
                         </Button>
                      </Link>
                   </div>
