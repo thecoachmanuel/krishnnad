@@ -52,9 +52,9 @@ export function HomeHeroClient({ headline, subheadline }: HomeHeroClientProps) {
                   View Collection <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/about">
+              <Link href="/contact">
                 <Button variant="outline" size="lg" className="h-14 px-8 text-base">
-                  Our Story
+                  Contact Us
                 </Button>
               </Link>
             </div>
