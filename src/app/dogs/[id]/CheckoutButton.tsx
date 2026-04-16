@@ -4,16 +4,16 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/Button"
-import { useToast } from "@/hooks/use-toast"
+import { ShoppingCart } from "lucide-react"
 
 declare const PaystackPop: any
 
-interface ReserveButtonProps {
+interface CheckoutButtonProps {
   dogId: string
   dogName: string
 }
 
-export function ReserveButton({ dogId, dogName }: ReserveButtonProps) {
+export function CheckoutButton({ dogId, dogName }: CheckoutButtonProps) {
   const [loading, setLoading] = React.useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -29,15 +29,14 @@ export function ReserveButton({ dogId, dogName }: ReserveButtonProps) {
     }
   }, [])
 
-  const handleReserve = async () => {
+  const handleCheckout = async () => {
     try {
       setLoading(true)
 
       // 1. Check Auth
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        // Use custom confirm/alert or just redirect
-        if (confirm("You need to be logged in to reserve a dog. Log in now?")) {
+        if (confirm("You need to be logged in to proceed with checkout. Log in now?")) {
            router.push(`/auth/login?redirectTo=/dogs/${dogId}`)
         }
         setLoading(false)
@@ -65,10 +64,11 @@ export function ReserveButton({ dogId, dogName }: ReserveButtonProps) {
         currency: checkoutData.currency,
         ref: checkoutData.reference,
         callback: function(response: any) {
-          // Webhook handles the heavy lifting, but we redirect for UX
+          // Webhook handles status and marquing dog as 'Sold'
           router.push(`/account/orders?success=true&ref=${response.reference}`)
         },
         onClose: function() {
+          setLoading(true) // Keep loading state until we figure out if they closed intentionally
           setLoading(false)
         }
       })
@@ -84,11 +84,12 @@ export function ReserveButton({ dogId, dogName }: ReserveButtonProps) {
   return (
     <Button 
       size="lg" 
-      className="h-16 flex-1 text-lg font-bold shadow-[0_0_20px_rgba(217,119,6,0.3)] border-none"
-      onClick={handleReserve}
+      className="h-16 flex-1 text-lg font-bold shadow-[0_0_20px_rgba(217,119,6,0.3)] border-none gap-2 bg-[var(--accent)] hover:bg-[var(--accent)]/90"
+      onClick={handleCheckout}
       disabled={loading}
     >
-      {loading ? "Processing..." : `Reserve ${dogName}`}
+      <ShoppingCart className="h-5 w-5" />
+      {loading ? "Initializing..." : `Buy ${dogName} Now`}
     </Button>
   )
 }

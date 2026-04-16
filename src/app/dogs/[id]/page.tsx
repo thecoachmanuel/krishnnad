@@ -7,7 +7,8 @@ import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { Badge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
-import { ReserveButton } from "./ReserveButton"
+import { CheckoutButton } from "./CheckoutButton"
+import { WhatsAppButton } from "@/components/WhatsAppButton"
 
 interface DogDetailPageProps {
   params: Promise<{
@@ -19,6 +20,7 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
   const { id } = await params
   const supabase = await createClient()
 
+  // 1. Fetch Dog Details
   const { data: dog, error } = await supabase
     .from("dogs")
     .select(`
@@ -32,6 +34,15 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
   if (error || !dog) {
     return notFound()
   }
+
+  // 2. Fetch Contact Info from settings
+  const { data: contactSetting } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "contactWhatsApp")
+    .single()
+  
+  const whatsappNumber = contactSetting?.value || "+2348000000000"
 
   const formattedPrice = new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -192,10 +203,8 @@ export default async function DogDetailPage({ params }: DogDetailPageProps) {
               <div className="flex flex-col sm:flex-row gap-4 mt-auto">
                  {!isSold ? (
                    <>
-                     <ReserveButton dogId={dog.id} dogName={dog.name} />
-                     <Button size="lg" variant="outline" className="h-16 px-8 font-semibold">
-                       WhatsApp Enquiries
-                     </Button>
+                     <CheckoutButton dogId={dog.id} dogName={dog.name} />
+                     <WhatsAppButton dogId={dog.id} dogName={dog.name} phone={whatsappNumber} />
                    </>
                  ) : (
                    <Button size="lg" variant="secondary" className="h-16 w-full cursor-not-allowed opacity-70" disabled>

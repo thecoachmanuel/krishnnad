@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       })
 
     if (orderError) {
-      return NextResponse.json({ error: 'Failed to initialize order' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to initialize checkout' }, { status: 500 })
     }
 
     // Return init payload for Paystack Popup JS
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
     }, { status: 200 })
 
   } catch (error) {
-    return NextResponse.json({ error: 'Checkout initialization failed' }, { status: 500 })
+    console.error("Checkout error:", error)
+    return NextResponse.json({ error: 'Checkout server error' }, { status: 500 })
   }
 }
