@@ -106,7 +106,7 @@ export async function Navbar() {
 
             <Link href="/dogs">
               <Button className="hidden sm:flex h-11 px-8 rounded-full border-none bg-black text-white hover:bg-black/90 font-black text-xs uppercase tracking-widest shadow-xl shadow-black/10">
-                Reserve Dog
+                Adopt a Dog
               </Button>
             </Link>
 
