@@ -65,7 +65,7 @@ export function MobileMenu({
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-              className="fixed inset-y-0 right-0 z-[101] w-full max-w-[340px] bg-[#0A0A0B] border-l border-white/5 p-8 flex flex-col md:hidden shadow-2xl shadow-black/100"
+              className="fixed inset-y-0 right-0 z-[101] w-full max-w-[340px] bg-black border-l border-white/5 p-8 flex flex-col md:hidden shadow-[0_0_50px_rgba(0,0,0,1)]"
             >
               <div className="flex items-center justify-between mb-12">
                 <div className="flex items-center gap-3">
