@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Package, truck, CheckCircle2, XCircle, MoreVertical } from "lucide-react"
+import { Search, Package, Truck, CheckCircle2, XCircle, MoreVertical } from "lucide-react"
 
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
