@@ -44,7 +44,8 @@ export default async function HomePage() {
          images:dog_images(url)
       `)
       .eq('is_featured', true)
-      .limit(3)
+      .order('created_at', { ascending: false })
+      .limit(10)
 
    const featuredDogs = dogsData?.map(dog => ({
       ...dog,
