@@ -30,7 +30,7 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className={`${inter.variable} ${playfair.variable} min-h-full flex flex-col antialiased`}>
         {children}
         <Toaster />
       </body>
