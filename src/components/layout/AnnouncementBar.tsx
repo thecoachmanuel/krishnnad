@@ -9,9 +9,23 @@ interface AnnouncementBarProps {
 }
 
 export function AnnouncementBar({ text }: AnnouncementBarProps) {
-  const [isVisible, setIsVisible] = React.useState(true)
+  const [isVisible, setIsVisible] = React.useState(false) // Start hidden to prevent flicker
+  const [hasChecked, setHasChecked] = React.useState(false)
 
-  if (!isVisible || !text) return null
+  React.useEffect(() => {
+    const isDismissed = localStorage.getItem("syndicate_announcement_dismissed")
+    if (!isDismissed) {
+      setIsVisible(true)
+    }
+    setHasChecked(true)
+  }, [])
+
+  const handleClose = () => {
+    setIsVisible(false)
+    localStorage.setItem("syndicate_announcement_dismissed", "true")
+  }
+
+  if (!hasChecked || !isVisible || !text) return null
 
   return (
     <AnimatePresence>
@@ -39,7 +53,7 @@ export function AnnouncementBar({ text }: AnnouncementBarProps) {
 
           {/* Close Button */}
           <button 
-            onClick={() => setIsVisible(false)}
+            onClick={handleClose}
             className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
           >
             <X className="h-3 w-3" />

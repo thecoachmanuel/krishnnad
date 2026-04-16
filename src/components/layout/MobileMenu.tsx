@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Heart, User, LayoutDashboard, LogOut, ArrowRight, Package, Settings } from "lucide-react"
+import { Menu, X, Heart, User, LayoutDashboard, LogOut, ArrowRight, Package, Settings, ShieldCheck, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/Button"
 
@@ -47,30 +47,36 @@ export function MobileMenu({
         <Menu className="h-7 w-7" />
       </Button>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
-          <>
-            {/* Backdrop */}
+          <div className="fixed inset-0 z-[9999] md:hidden">
+            {/* Backdrop - High Opacity & Heavy Blur */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm md:hidden"
+              className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
             />
 
-            {/* Menu Content */}
+            {/* Menu Content - Hard Solid Background */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-              className="fixed inset-y-0 right-0 z-[101] w-full max-w-[340px] bg-black border-l border-white/5 p-8 flex flex-col md:hidden shadow-[0_0_50px_rgba(0,0,0,1)]"
+              style={{ backgroundColor: "#000000" }} // Inline force solid black
+              className="absolute inset-y-0 right-0 w-full max-w-[360px] border-l-2 border-[var(--accent)]/30 flex flex-col shadow-[0_0_100px_rgba(0,0,0,1)]"
             >
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-3">
-                  {logoUrl && (
-                    <img src={logoUrl} alt="" className="h-8 w-auto object-contain" />
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between p-8 border-b border-white/5">
+                <div className="flex items-center gap-4">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="" className="h-10 w-auto object-contain" />
+                  ) : (
+                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-[var(--accent)]/10 text-[var(--accent)]">
+                       <ShieldCheck className="h-6 w-6" />
+                    </div>
                   )}
                   <span className="font-display text-xl font-black uppercase tracking-tight text-[var(--foreground)]">
                     {siteName}
@@ -79,71 +85,86 @@ export function MobileMenu({
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="rounded-full border border-white/10 text-[var(--muted)] hover:text-white"
+                  className="h-12 w-12 rounded-full border border-white/10 text-[var(--muted)] hover:text-white"
                   onClick={() => setIsOpen(false)}
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-6 w-6" />
                 </Button>
               </div>
 
-              {/* Main Links */}
-              <nav className="flex flex-col gap-6 mb-12">
+              {/* Main Navigation */}
+              <nav className="flex flex-col p-8 gap-1">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] mb-4">Discover Syndicate</p>
                 {links.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-3xl font-black uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--accent)] transition-all active:scale-95 origin-left"
+                    className="group flex items-center justify-between py-4 border-b border-white/5 last:border-none"
                   >
-                    {link.label}
+                    <span className="text-2xl font-black uppercase tracking-widest text-[var(--foreground)] group-hover:text-[var(--accent)] transition-all">
+                      {link.label}
+                    </span>
+                    <ChevronRight className="h-5 w-5 text-[var(--muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
                   </Link>
                 ))}
               </nav>
 
-              <div className="mt-auto space-y-8">
-                 {/* Authentication Context (My Account Section) */}
-                 <div className="pt-8 border-t border-white/5 space-y-4">
+              <div className="mt-auto p-8 space-y-8 bg-white/5 border-t border-white/5">
+                 {/* Authentication & Account Context */}
+                 <div className="space-y-4">
                     {user ? (
                        <div className="space-y-4">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] px-1">My Account</p>
-                          <div className="grid gap-2">
+                          <div className="flex items-center gap-3 px-2">
+                             <div className="h-10 w-10 rounded-full bg-[var(--accent)] flex items-center justify-center text-black font-black uppercase">
+                                {user.email?.charAt(0)}
+                             </div>
+                             <div>
+                                <p className="text-[10px] font-black uppercase text-[var(--muted)]">Active Session</p>
+                                <p className="text-sm font-bold text-[var(--foreground)] truncate max-w-[180px]">{user.email}</p>
+                             </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
                              {isAdmin && (
-                               <Link href="/admin/dashboard" onClick={() => setIsOpen(false)}>
-                                  <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-2xl border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] font-bold">
+                               <Link href="/admin/dashboard" onClick={() => setIsOpen(false)} className="col-span-2">
+                                  <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-2xl border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] font-black uppercase text-[10px] tracking-widest">
                                      <LayoutDashboard className="h-5 w-5" /> Admin Console
                                   </Button>
                                </Link>
                              )}
                              
                              <Link href="/account/orders" onClick={() => setIsOpen(false)}>
-                               <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--foreground)] hover:bg-white/5 font-bold">
-                                  <Package className="h-4 w-4 text-[var(--muted)]" /> My Orders
+                               <Button variant="ghost" className="w-full flex-col h-20 rounded-2xl bg-white/5 text-[var(--foreground)] hover:bg-white/10 font-bold gap-1">
+                                  <Package className="h-5 w-5 text-[var(--accent)]" /> 
+                                  <span className="text-[10px] uppercase tracking-tighter">Orders</span>
                                </Button>
                              </Link>
 
                              <Link href="/account/wishlist" onClick={() => setIsOpen(false)}>
-                               <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--foreground)] hover:bg-white/5 font-bold">
-                                  <Heart className="h-4 w-4 text-[var(--muted)]" /> Wishlist
+                               <Button variant="ghost" className="w-full flex-col h-20 rounded-2xl bg-white/5 text-[var(--foreground)] hover:bg-white/10 font-bold gap-1">
+                                  <Heart className="h-5 w-5 text-[var(--danger)]" /> 
+                                  <span className="text-[10px] uppercase tracking-tighter">Wishlist</span>
                                </Button>
                              </Link>
 
-                             <Link href="/account/settings" onClick={() => setIsOpen(false)}>
-                               <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--foreground)] hover:bg-white/5 font-bold">
-                                  <Settings className="h-4 w-4 text-[var(--muted)]" /> Settings
+                             <Link href="/account/settings" onClick={() => setIsOpen(false)} className="col-span-2">
+                               <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--muted)] hover:text-white font-bold">
+                                  <Settings className="h-4 w-4" /> Account Settings
                                </Button>
                              </Link>
 
-                             <form action="/auth/signout" method="post" className="w-full pt-2">
+                             <form action="/auth/signout" method="post" className="w-full col-span-2">
                                <Button type="submit" variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--danger)]/70 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 font-bold">
-                                  <LogOut className="h-4 w-4" /> Sign Out from Syndicate
-                               </Button>
+                                  <LogOut className="h-4 w-4" /> Secure Terminate
+                                </Button>
                              </form>
                           </div>
                        </div>
                     ) : (
                        <Link href="/auth/login" onClick={() => setIsOpen(false)}>
-                          <Button className="w-full h-16 text-lg font-black uppercase tracking-widest bg-[var(--foreground)] text-black rounded-3xl">
-                             Authentication Hub
+                          <Button className="w-full h-16 text-sm font-black uppercase tracking-widest bg-white text-black rounded-3xl hover:bg-white/90">
+                             Syndicate Entry
                           </Button>
                        </Link>
                     )}
@@ -152,14 +173,14 @@ export function MobileMenu({
                  {/* Primary CTA */}
                  {!isAdmin && (
                    <Link href="/dogs" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full h-16 rounded-3xl bg-[var(--accent)] text-black font-black uppercase tracking-widest text-base shadow-xl shadow-[var(--accent)]/20">
-                         Reserve Dog <ArrowRight className="ml-2 h-5 w-5" />
+                      <Button className="w-full h-18 rounded-[2rem] bg-[var(--accent)] text-black font-black uppercase tracking-widest text-base shadow-2xl shadow-[var(--accent)]/30 hover:scale-[1.02] transition-transform">
+                         Reserve Puppy <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                    </Link>
                  )}
               </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
     </>
