@@ -15,28 +15,12 @@ function LoginForm() {
   const [password, setPassword] = React.useState("")
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  const [logoUrl, setLogoUrl] = React.useState<string | null>(null)
   
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams?.get('redirectTo') || '/account/orders'
 
   const supabase = createClient()
-
-  React.useEffect(() => {
-    async function fetchBranding() {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'branding')
-        .single()
-      
-      if (data?.value?.logoUrl) {
-        setLogoUrl(data.value.logoUrl)
-      }
-    }
-    fetchBranding()
-  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,12 +52,8 @@ function LoginForm() {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 shadow-2xl">
       <div className="mb-8 flex flex-col items-center justify-center text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] p-2">
-           {logoUrl ? (
-             <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
-           ) : (
-             <ShieldCheck className="h-8 w-8 text-[var(--accent)]" />
-           )}
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 shadow-xl shadow-[var(--accent)]/5">
+           <ShieldCheck className="h-8 w-8" />
         </div>
         <h2 className="font-display text-3xl font-bold text-[var(--foreground)]">Welcome Back</h2>
         <p className="mt-2 text-sm text-[var(--muted)]">Please sign in to your Krishnnad Syndicate account.</p>
