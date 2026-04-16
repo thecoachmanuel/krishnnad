@@ -6,7 +6,7 @@ import { Search, Image as ImageIcon, Trash2, Download, ExternalLink, Filter } fr
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "@/components/ui/Toast"
+import { toast } from "@/hooks/use-toast"
 
 export default function AdminMediaLibrary() {
   const [searchTerm, setSearchTerm] = React.useState("")

@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Bred for Excellence. View our collection of premium dog breeds and reserve your best friend today.",
 };
 
+import { Toaster } from "@/components/ui/Toaster";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +30,10 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

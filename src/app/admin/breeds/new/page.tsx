@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "@/components/ui/Toast"
+import { toast } from "@/hooks/use-toast"
 
 export default function NewBreedPage() {
   const router = useRouter()

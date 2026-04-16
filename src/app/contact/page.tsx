@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { MapPin, Phone, Mail, CheckCircle2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "@/components/ui/Toast"
+import { toast } from "@/hooks/use-toast"
 
 export default function ContactPage() {
   const [loading, setLoading] = React.useState(false)

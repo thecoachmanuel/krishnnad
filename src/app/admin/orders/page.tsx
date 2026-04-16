@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "@/components/ui/Toast"
+import { toast } from "@/hooks/use-toast"
 
 export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = React.useState("")

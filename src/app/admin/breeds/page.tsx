@@ -7,7 +7,7 @@ import { Eye, Edit, Trash2, Plus, Filter } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "@/components/ui/Toast"
+import { toast } from "@/hooks/use-toast"
 
 export default function AdminBreedsManager() {
   const [searchTerm, setSearchTerm] = React.useState("")
