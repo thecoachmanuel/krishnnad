@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Heart, User, LayoutDashboard, LogOut, ArrowRight, Package, Settings, ShieldCheck, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/Button"
+import { logoutAction } from "@/app/auth/actions"
 
 interface MobileMenuProps {
   user: any
@@ -156,11 +157,11 @@ export function MobileMenu({
                                 </Button>
                               </Link>
 
-                             <form action="/auth/signout" method="post" className="w-full col-span-2">
-                               <Button type="submit" variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--danger)]/70 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 font-bold">
-                                  <LogOut className="h-4 w-4" /> Sign Out
+                              <form action={logoutAction} className="w-full col-span-2">
+                                <Button type="submit" variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--danger)]/70 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 font-bold">
+                                   <LogOut className="h-4 w-4" /> Sign Out
                                 </Button>
-                             </form>
+                              </form>
                           </div>
                        </div>
                     ) : (

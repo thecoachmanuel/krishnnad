@@ -1,6 +1,8 @@
 "use server"
 
 import { createClient, createAdminClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 export async function loginAction(formData: FormData) {
   const email = (formData.get("email") as string)?.trim()
@@ -103,4 +105,11 @@ export async function loginAction(formData: FormData) {
     user: data.user,
     role: isAdminCredentials ? 'admin' : (profile?.role || 'user')
   }
+}
+
+export async function logoutAction() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  revalidatePath('/', 'layout')
+  redirect('/auth/login')
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button"
 import { createClient } from "@/lib/supabase/server"
 import { MobileMenu } from "./MobileMenu"
 import { AnnouncementBar } from "./AnnouncementBar"
+import { logoutAction } from "@/app/auth/actions"
 
 export async function Navbar() {
   const supabase = await createClient()
@@ -94,7 +95,7 @@ export async function Navbar() {
                         <Heart className="h-5 w-5" />
                       </Button>
                     </Link>
-                  <form action="/auth/signout" method="post">
+                  <form action={logoutAction}>
                     <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 text-[var(--danger)]/50 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10">
                       <LogOut className="h-5 w-5" />
                     </Button>

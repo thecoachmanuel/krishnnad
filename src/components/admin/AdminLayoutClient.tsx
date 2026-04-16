@@ -18,6 +18,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
+import { logoutAction } from "@/app/auth/actions"
 
 const adminLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -98,7 +99,7 @@ export function AdminLayoutClient({
         </nav>
 
         <div className="border-t border-[var(--border)] p-4">
-          <form action="/auth/signout" method="post">
+          <form action={logoutAction}>
             <Button 
               type="submit"
               variant="ghost" 
