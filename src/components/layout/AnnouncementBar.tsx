@@ -28,7 +28,7 @@ export function AnnouncementBar({ text }: AnnouncementBarProps) {
               animate={{ x: ["100%", "-100%"] }}
               transition={{
                 repeat: Infinity,
-                duration: 20,
+                duration: 45,
                 ease: "linear",
               }}
               className="inline-block"
