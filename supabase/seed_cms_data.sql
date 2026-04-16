@@ -14,7 +14,7 @@ VALUES ('home_content', '{
   "heroTitle": "Experience the Pinnacle of Dog Pedigree",
   "heroSubtitle": "At Krishnnad Syndicate, we don''t just breed dogs; we curate legacies. Discover your world-class companion today.",
   "heroCtaMain": "Browse Collection",
-  "heroCtaSecondary": "Our Story",
+  "heroCtaSecondary": "Contact Us",
   "featuresTitle": "Why Choose Krishnnad?",
   "features": [
     { "icon": "ShieldCheck", "title": "Health Guaranteed", "desc": "Every puppy undergoes rigorous veterinary checks and genetic screening." },

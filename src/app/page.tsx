@@ -161,7 +161,7 @@ export default async function HomePage() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                      <Link href="/contact">
                         <Button size="lg" className="h-16 px-12 text-lg bg-black text-white hover:bg-black/90 border-none">
-                           {content.heroCtaSecondary || "Contact Krishnnad"}
+                           Contact Us
                         </Button>
                      </Link>
                      <Link href="/dogs">
