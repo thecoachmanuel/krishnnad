@@ -203,17 +203,17 @@ CREATE TABLE IF NOT EXISTS orders (
 
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Customers can read their own orders" ON orders;
-CREATE POLICY "Customers can read their own orders" ON orders
+DROP POLICY IF EXISTS "Customers can read their own orders" ON public.orders;
+CREATE POLICY "Customers can read their own orders" ON public.orders
   FOR SELECT USING (auth.uid() = customer_id);
 
-DROP POLICY IF EXISTS "Customers can insert pending orders" ON orders;
-CREATE POLICY "Customers can insert pending orders" ON orders
+DROP POLICY IF EXISTS "Customers can insert pending orders" ON public.orders;
+CREATE POLICY "Customers can insert pending orders" ON public.orders
   FOR INSERT WITH CHECK (auth.uid() = customer_id AND status = 'pending');
 
-DROP POLICY IF EXISTS "Admin has full access to orders" ON orders;
-CREATE POLICY "Admin has full access to orders" ON orders
-  FOR ALL USING (check_is_admin());
+DROP POLICY IF EXISTS "Admin has full access to orders" ON public.orders;
+CREATE POLICY "Admin has full access to orders" ON public.orders
+  FOR ALL USING (public.check_is_admin());
 
 
 -- ==========================================

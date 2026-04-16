@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
-import { createServerClient } from '@supabase/ssr'
+import { createAdminClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 
 // In a real API router setting, webhooks need to bypass Next.js default body parsing 
@@ -26,7 +26,8 @@ export async function POST(request: Request) {
     }
 
     const event = JSON.parse(rawBody)
-
+    console.log('Paystack Webhook received:', event.event, 'Reference:', event.data?.reference)
+    
     // Handle idempotency & successful charge
     if (event.event === 'charge.success') {
       const reference = event.data.reference
@@ -34,17 +35,7 @@ export async function POST(request: Request) {
       const amountPaid = event.data.amount / 100 // Convert Kobo to NGN
 
       // Initialize Supabase Admin client to bypass RLS for webhook operations
-      const cookieStore = await cookies()
-      const supabaseAdmin = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!, 
-        {
-          cookies: {
-            getAll() { return cookieStore.getAll() },
-            setAll(cookiesToSet) { /* ignore for admin */ },
-          }
-        }
-      )
+      const supabaseAdmin = createAdminClient()
 
       // Fetch existing order using reference
       const { data: order, error: orderError } = await supabaseAdmin
@@ -54,14 +45,17 @@ export async function POST(request: Request) {
         .single()
         
       if (orderError || !order) {
-        // Just return 200, maybe the order isn't fully created yet in edge cases
+        console.error('Webhook Error: Order not found for reference:', reference, orderError)
         return NextResponse.json({ status: 'Order not found, continuing' }, { status: 200 })
       }
 
       // If already fulfilled, return 200 early (Idempotency check)
       if (order.status === 'successful') {
+        console.log('Webhook: Order already processed, skipping.')
         return NextResponse.json({ status: 'Already processed' }, { status: 200 })
       }
+
+      console.log('Webhook: Updating order', order.id, 'to successful. Amount:', amountPaid)
 
       // 1. Update Order Status
       await supabaseAdmin
