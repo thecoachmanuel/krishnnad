@@ -84,11 +84,16 @@ export async function Navbar() {
                       </Button>
                     </Link>
                   )}
-                  <Link href="/account">
-                    <Button variant="ghost" size="icon" className="h-10 w-10 text-[var(--muted)] hover:text-[var(--foreground)]">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </Link>
+                    <Link href="/account">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 text-[var(--muted)] hover:text-[var(--foreground)]">
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                    <Link href="/account/wishlist">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 text-[var(--muted)] hover:text-[var(--foreground)]">
+                        <Heart className="h-5 w-5" />
+                      </Button>
+                    </Link>
                   <form action="/auth/signout" method="post">
                     <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 text-[var(--danger)]/50 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10">
                       <LogOut className="h-5 w-5" />
@@ -96,11 +101,18 @@ export async function Navbar() {
                   </form>
                 </>
               ) : (
-                <Link href="/auth/login">
-                  <Button variant="ghost" className="text-xs font-black uppercase tracking-widest px-6">
-                    Sign In
-                  </Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link href="/auth/login">
+                    <Button variant="ghost" className="text-xs font-black uppercase tracking-widest px-4">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup">
+                    <Button variant="outline" className="text-xs font-black uppercase tracking-widest px-4 border-[var(--border)] hover:bg-[var(--surface-2)]">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
               )}
             </div>
 
