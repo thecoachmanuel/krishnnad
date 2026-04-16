@@ -5,6 +5,7 @@ import { Heart, User, LayoutDashboard, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { createClient } from "@/lib/supabase/server"
 import { MobileMenu } from "./MobileMenu"
+import { AnnouncementBar } from "./AnnouncementBar"
 
 export async function Navbar() {
   const supabase = await createClient()
@@ -41,11 +42,7 @@ export async function Navbar() {
   return (
     <div className="flex flex-col">
        {/* Announcement Bar */}
-       {announcement && (
-        <div className="bg-black py-2.5 text-center text-[10px] font-black uppercase tracking-[0.2em] text-[var(--accent)] border-b border-white/5">
-          {announcement}
-        </div>
-       )}
+       <AnnouncementBar text={announcement} />
        
        <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
