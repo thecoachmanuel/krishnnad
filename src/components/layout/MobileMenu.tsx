@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { createPortal } from "react-dom"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Heart, User, LayoutDashboard, LogOut, ArrowRight, Package, Settings, ShieldCheck, ChevronRight } from "lucide-react"
@@ -23,6 +24,11 @@ export function MobileMenu({
   links 
 }: MobileMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Prevent scroll when menu is open
   React.useEffect(() => {
@@ -47,9 +53,10 @@ export function MobileMenu({
         <Menu className="h-7 w-7" />
       </Button>
 
-      <AnimatePresence mode="wait">
-        {isOpen && (
-          <div className="fixed inset-0 z-[9999] md:hidden">
+      {mounted && createPortal(
+        <AnimatePresence mode="wait">
+          {isOpen && (
+            <div className="fixed inset-0 z-[99999] md:hidden">
             {/* Backdrop - 100% Opaque & Heavy Blur */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -70,12 +77,8 @@ export function MobileMenu({
               {/* Drawer Header */}
               <div className="flex items-center justify-between p-8 border-b border-white/5">
                 <div className="flex items-center gap-4">
-                  {logoUrl ? (
+                  {logoUrl && (
                     <img src={logoUrl} alt="" className="h-10 w-auto object-contain" />
-                  ) : (
-                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-[var(--accent)]/10 text-[var(--accent)]">
-                       <ShieldCheck className="h-6 w-6" />
-                    </div>
                   )}
                   <span className="font-display text-xl font-black uppercase tracking-tight text-[var(--foreground)]">
                     {siteName}
@@ -181,7 +184,9 @@ export function MobileMenu({
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
-    </>
+      </AnimatePresence>,
+      document.body
+    )}
+  </>
   )
 }
