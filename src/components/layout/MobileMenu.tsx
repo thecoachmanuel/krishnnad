@@ -80,7 +80,7 @@ export function MobileMenu({
                   {logoUrl && (
                     <img src={logoUrl} alt="" className="h-10 w-auto object-contain" />
                   )}
-                  <span className="font-display text-xl font-black uppercase tracking-tight text-[var(--foreground)]">
+                  <span className="font-display text-lg font-black uppercase tracking-tight text-[var(--foreground)]">
                     {siteName}
                   </span>
                 </div>

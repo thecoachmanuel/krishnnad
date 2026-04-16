@@ -55,7 +55,7 @@ export async function Navbar() {
                   className="h-10 w-auto object-contain"
                 />
               )}
-              <span className="font-display text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink animate-in fade-in slide-in-from-left duration-500">
+              <span className="font-display text-lg sm:text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink animate-in fade-in slide-in-from-left duration-500">
                 {siteName}
               </span>
             </Link>

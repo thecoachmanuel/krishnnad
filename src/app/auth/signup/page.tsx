@@ -44,24 +44,6 @@ export default function SignupPage() {
       return
     }
 
-    // 2. Insert into profiles (will ideally fire via Supabase triggers but we do it manually or assume RLS doesn't block if public)
-    // Actually, it's a best practice to have a Supabase Postgres trigger "on auth.users insert -> profiles insert".
-    // For simplicity here, we assume the trigger is implemented or handled by a backend hook. 
-    // However, if we do it here:
-    if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').upsert({
-        id: data.user.id,
-        full_name: fullName,
-        email,
-        phone,
-        role: 'customer'
-      })
-      if (profileError) {
-          // just log
-          console.error(profileError)
-      }
-    }
-
     setSuccess(true)
     setLoading(false)
   }

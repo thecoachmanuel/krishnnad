@@ -29,9 +29,26 @@ BEGIN
     new.id,
     COALESCE(new.raw_user_meta_data->>'full_name', ''),
     new.email,
-    COALESCE(new.raw_user_meta_data->>'role', 'customer')
+    'customer' -- Hardcoded to prevent role injection
   );
   RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Protection function to prevent non-admins from changing roles
+CREATE OR REPLACE FUNCTION public.protect_profile_role()
+RETURNS trigger AS $$
+BEGIN
+  -- If role is being changed
+  IF (NEW.role IS DISTINCT FROM OLD.role) THEN
+    -- Check if the actual performer (not the definer) is an admin
+    -- Note: check_is_admin() uses auth.uid() which is standard for RLS
+    IF NOT public.check_is_admin() THEN
+      -- Revert the role change to the old value
+      NEW.role = OLD.role;
+    END IF;
+  END IF;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -282,6 +299,12 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Trigger to protect the role field from unauthorized changes
+DROP TRIGGER IF EXISTS trg_protect_profile_role ON public.profiles;
+CREATE TRIGGER trg_protect_profile_role
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.protect_profile_role();
 
 -- ONE-TIME ADMIN UPGRADE (Uncomment and run with your email to manually upgrade a user)
 -- UPDATE profiles SET role = 'admin' WHERE email = 'YOUR_EMAIL@HERE.COM';
