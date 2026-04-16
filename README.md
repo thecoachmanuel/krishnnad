@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Krishnnad Syndicate
 
-## Getting Started
+**Experience the Pinnacle of Dog Pedigree.**
 
-First, run the development server:
+Krishnnad Syndicate is a premium, full-stack web application designed for a luxury dog kennel. It provides a seamless experience for both high-end customers looking for purebred dogs and administrators managing a sophisticated breeding business.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### For Customers
+- **Curated Collection**: Browse high-quality dog listings with rich details on health and pedigree.
+- **Wishlist**: Save favorite dogs to a personal wishlist (synced across devices).
+- **Secure Reservation**: Real-time reservation system integrated with **Paystack** for secure payments.
+- **Support & Enquiries**: Dedicated contact channels that route enquiries directly to the kennel management.
+- **Account Management**: Self-service account with password security and personal transaction history.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### For Administrators
+- **Performance Analytics**: Real-time KPI dashboard showing revenue, active listings, and growth metrics.
+- **Inventory Management**: Comprehensive CRUD for dog listings, including multi-image uploads and health certification tracking.
+- **Breeds Library**: Manage breed standards and historical pedigrees.
+- **Logistics & Orders**: End-to-end tracking for sales and delivery status management.
+- **Media Hub**: Centralized asset management for all kennel photography and documents.
+- **Site Configuration**: Dynamically update homepage content and business variables (e.g., delivery fees) from the admin console.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Technology Stack
 
-## Learn More
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Database & Auth**: [Supabase](https://supabase.com/)
+- **Styling**: Vanilla CSS with modern Design Tokens
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Payments**: [Paystack](https://paystack.com/)
+- **Charts**: [Recharts](https://recharts.org/)
 
-To learn more about Next.js, take a look at the following resources:
+## 🏁 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
+- Node.js 18+
+- Supabase account and project
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/thecoachmanuel/krishnnad.git
+   cd krishnnad
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Set up Environment Variables:**
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=your_paystack_key
+   PAYSTACK_SECRET_KEY=your_paystack_secret
+   ```
+
+4. **Initialize Database:**
+   Run the SQL script provided in `supabase/schema.sql` within your Supabase SQL Editor to set up tables, triggers, and RLS policies.
+
+5. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+## 🔒 Security
+The application implements strict **Row Level Security (RLS)** in Supabase, ensuring that customer data is private and the Admin Console is accessible only to authorized personnel via custom profile roles.
+
+## 📄 License
+Internal use for Krishnnad Syndicate.
