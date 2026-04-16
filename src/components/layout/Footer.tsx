@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Instagram, Twitter, Mail, MapPin, Phone, ShieldCheck } from "lucide-react"
+import { Camera, Globe, Mail, MapPin, Phone, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 
 export async function Footer() {
@@ -37,7 +37,7 @@ export async function Footer() {
                   <Camera className="h-4 w-4" />
                </Link>
                <Link href="#" className="h-10 w-10 rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all">
-                  <Twitter className="h-4 w-4" />
+                  <Globe className="h-4 w-4" />
                </Link>
             </div>
           </div>
