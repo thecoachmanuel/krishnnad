@@ -50,23 +50,22 @@ export function MobileMenu({
       <AnimatePresence mode="wait">
         {isOpen && (
           <div className="fixed inset-0 z-[9999] md:hidden">
-            {/* Backdrop - High Opacity & Heavy Blur */}
+            {/* Backdrop - 100% Opaque & Heavy Blur */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+              className="absolute inset-0 bg-black backdrop-blur-2xl"
             />
 
-            {/* Menu Content - Hard Solid Background */}
+            {/* Menu Content - 100% Solid & Full Width */}
             <motion.div
               initial={{ x: "100%" }}
-              animate={{ x: 0 }}
+              animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-              style={{ backgroundColor: "#000000" }} // Inline force solid black
-              className="absolute inset-y-0 right-0 w-full max-w-[360px] border-l-2 border-[var(--accent)]/30 flex flex-col shadow-[0_0_100px_rgba(0,0,0,1)]"
+              className="absolute inset-y-0 right-0 w-full bg-[#0E0E12] border-l-2 border-[var(--accent)]/30 flex flex-col shadow-[0_0_100px_rgba(0,0,0,1)] overflow-y-auto"
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between p-8 border-b border-white/5">
