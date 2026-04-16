@@ -68,7 +68,10 @@ export function MediaLibrary({ onSelect, selectedUrl, multiSelect, onMultiSelect
           .from('dog-images')
           .upload(filePath, file)
 
-        if (uploadError) throw uploadError
+        if (uploadError) {
+          console.error("Supabase Storage Upload Error:", uploadError)
+          throw new Error(`Upload failed: ${uploadError.message}`)
+        }
 
         const { data: { publicUrl } } = supabase.storage
           .from('dog-images')
@@ -100,7 +103,11 @@ export function MediaLibrary({ onSelect, selectedUrl, multiSelect, onMultiSelect
 
       const path = url.split('/').pop()
       if (path) {
-        await supabase.storage.from('dog-images').remove([`library/${path}`])
+        // We use the library/ prefix since that's how we store them now
+        const { error: storageError } = await supabase.storage.from('dog-images').remove([`library/${path}`])
+        if (storageError) {
+          console.warn("Storage deletion warning (file might not exist in bucket):", storageError)
+        }
       }
 
       setMedia(media.filter(m => m.url !== url))
