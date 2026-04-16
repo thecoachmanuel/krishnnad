@@ -46,7 +46,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect customer account routes
+  // 3. Protect guest-only routes (login, signup, etc.)
+  if (pathname.startsWith('/auth')) {
+    // We allow signout to proceed
+    if (pathname === '/auth/signout') return supabaseResponse
+    
+    if (user) {
+      // If logged in as admin, go to dashboard
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+      if (profile?.role === 'admin') {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+      }
+      // Otherwise go to account
+      return NextResponse.redirect(new URL('/account/orders', request.url))
+    }
+  }
+
+  // 4. Protect customer account routes
   if (pathname.startsWith('/account')) {
     if (!user) {
       const loginUrl = new URL('/auth/login', request.url)

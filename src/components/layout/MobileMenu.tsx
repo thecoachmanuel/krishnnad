@@ -150,19 +150,11 @@ export function MobileMenu({
                                </Button>
                              </Link>
 
-                             {!isAdmin && (
-                               <Link href="/account/orders" onClick={() => setIsOpen(false)} className="col-span-2">
-                                  <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-2xl border-white/10 bg-white/5 text-[var(--foreground)] font-black uppercase text-[10px] tracking-widest">
-                                     <LayoutDashboard className="h-5 w-5" /> Dashboard
-                                  </Button>
-                               </Link>
-                             )}
-                             
-                             <Link href="/account/settings" onClick={() => setIsOpen(false)} className="col-span-2">
-                               <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--foreground)] hover:text-[var(--accent)] font-bold">
-                                  <User className="h-4 w-4" /> My Account
-                               </Button>
-                             </Link>
+                              <Link href="/account/settings" onClick={() => setIsOpen(false)} className="col-span-2">
+                                <Button variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--foreground)] hover:text-[var(--accent)] font-bold">
+                                   <User className="h-4 w-4" /> My Account
+                                </Button>
+                              </Link>
 
                              <form action="/auth/signout" method="post" className="w-full col-span-2">
                                <Button type="submit" variant="ghost" className="w-full justify-start gap-3 h-12 rounded-xl text-[var(--danger)]/70 hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 font-bold">
