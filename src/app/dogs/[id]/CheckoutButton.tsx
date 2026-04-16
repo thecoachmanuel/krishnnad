@@ -63,30 +63,33 @@ export function CheckoutButton({ dogId, dogName }: CheckoutButtonProps) {
         amount: checkoutData.amount,
         currency: checkoutData.currency,
         ref: checkoutData.reference,
-        callback: async function(response: any) {
-          try {
-            setLoading(true)
-            // 4. Direct Checkout Verification
-            const verifyResponse = await fetch("/api/orders/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ reference: response.reference }),
-            })
-            
-            if (!verifyResponse.ok) {
-              const errorData = await verifyResponse.json()
-              throw new Error(errorData.error || "Verification failed")
-            }
+        callback: function(response: any) {
+          const verifyPayment = async () => {
+            try {
+              setLoading(true)
+              // 4. Direct Checkout Verification
+              const verifyResponse = await fetch("/api/orders/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reference: response.reference }),
+              })
+              
+              if (!verifyResponse.ok) {
+                const errorData = await verifyResponse.json()
+                throw new Error(errorData.error || "Verification failed")
+              }
 
-            // Redirect on success
-            router.push(`/account/orders?success=true&ref=${response.reference}`)
-          } catch (err: any) {
-            console.error("Verification error:", err)
-            alert("Payment successful but verification failed. Our team will manually confirm your order shortly.")
-            router.push("/account/orders")
-          } finally {
-            setLoading(false)
+              // Redirect on success
+              router.push(`/account/orders?success=true&ref=${response.reference}`)
+            } catch (err: any) {
+              console.error("Verification error:", err)
+              alert("Payment successful but verification failed. Our team will manually confirm your order shortly.")
+              router.push("/account/orders")
+            } finally {
+              setLoading(false)
+            }
           }
+          verifyPayment();
         },
         onClose: function() {
           setLoading(false)
