@@ -98,14 +98,16 @@ export function AdminLayoutClient({
         </nav>
 
         <div className="border-t border-[var(--border)] p-4">
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start gap-3 text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-5 w-5" />
-            Logout
-          </Button>
+          <form action="/auth/signout" method="post">
+            <Button 
+              type="submit"
+              variant="ghost" 
+              className="w-full justify-start gap-3 text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10"
+            >
+              <LogOut className="h-5 w-5" />
+              Logout
+            </Button>
+          </form>
         </div>
       </aside>
 
