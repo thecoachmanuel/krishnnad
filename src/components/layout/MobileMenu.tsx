@@ -15,7 +15,13 @@ interface MobileMenuProps {
   links: { label: string; href: string }[]
 }
 
-export function MobileMenu({ user, isAdmin, siteName, logoUrl, links }: MobileMenuProps) {
+export function MobileMenu({ 
+  user, 
+  isAdmin, 
+  siteName, 
+  logoUrl, 
+  links 
+}: MobileMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   // Prevent scroll when menu is open
