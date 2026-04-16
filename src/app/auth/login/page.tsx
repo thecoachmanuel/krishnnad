@@ -9,15 +9,13 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { ShieldCheck, Mail, Lock } from "lucide-react"
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   
   const router = useRouter()
-  // React 19 / Next.js way to handle searchParams in client components requires fetching them, but we can't await searchParams here without suspense at the root. Next 15 requires searchParams to be Promise in Server Components. We use hook here.
-  // We will assume `useSearchParams` works sequentially in Client Components for Next 14/15.
   const searchParams = useSearchParams()
   const redirectTo = searchParams?.get('redirectTo') || '/account/orders'
 
@@ -38,7 +36,6 @@ export default function LoginPage() {
       return
     }
 
-    // Role-based routing
     if (result.success) {
       if (result.role === 'admin') {
         router.push('/admin/dashboard')
@@ -113,5 +110,17 @@ export default function LoginPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent" />
+      </div>
+    }>
+      <LoginForm />
+    </React.Suspense>
   )
 }
