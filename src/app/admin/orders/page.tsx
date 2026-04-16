@@ -16,6 +16,8 @@ export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = React.useState<any>(null)
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   
+  const [activeFilter, setActiveFilter] = React.useState("all")
+  
   const supabase = createClient()
 
   const fetchOrders = async () => {
@@ -63,12 +65,17 @@ export default function AdminOrdersPage() {
     }
   }
 
-  const filteredOrders = orders.filter(o => 
-    o.customer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    o.id.includes(searchTerm) ||
-    o.paystack_reference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    o.dog?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredOrders = orders.filter(o => {
+    const matchesSearch = 
+      o.customer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      o.id.includes(searchTerm) ||
+      o.paystack_reference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      o.dog?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesFilter = activeFilter === "all" || (o.delivery_status || "processing") === activeFilter
+
+    return matchesSearch && matchesFilter
+  })
 
   return (
     <div className="space-y-8">
@@ -94,15 +101,41 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-[2.5rem] border border-[var(--border)] bg-[var(--surface)] p-3 pl-8">
-         <div className="flex flex-1 items-center gap-4 w-full">
-            <Search className="h-5 w-5 text-[var(--muted)]" />
-            <Input 
-              placeholder="Search by ID, customer name, or payment reference..." 
-              className="bg-transparent border-none focus-visible:ring-0 text-lg font-medium p-0"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      <div className="flex flex-col gap-4">
+         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-[2.5rem] border border-[var(--border)] bg-[var(--surface)] p-3 pl-8">
+            <div className="flex flex-1 items-center gap-4 w-full">
+               <Search className="h-5 w-5 text-[var(--muted)]" />
+               <Input 
+               placeholder="Search by ID, customer name, or payment reference..." 
+               className="bg-transparent border-none focus-visible:ring-0 text-lg font-medium p-0"
+               value={searchTerm}
+               onChange={(e) => setSearchTerm(e.target.value)}
+               />
+            </div>
+         </div>
+
+         {/* Filter Bar */}
+         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {[
+               { id: 'all', label: 'All Orders' },
+               { id: 'processing', label: 'Processing' },
+               { id: 'shipped', label: 'Shipped' },
+               { id: 'out_for_delivery', label: 'In Transit' },
+               { id: 'delivered', label: 'Delivered' },
+               { id: 'cancelled', label: 'Cancelled' }
+            ].map((tab) => (
+               <button
+                  key={tab.id}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shrink-0 border ${
+                  activeFilter === tab.id 
+                  ? 'bg-black text-white border-black shadow-lg' 
+                  : 'bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--muted)]'
+                  }`}
+               >
+                  {tab.label}
+               </button>
+            ))}
          </div>
       </div>
 
