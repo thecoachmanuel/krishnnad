@@ -24,7 +24,10 @@ export async function Footer() {
           
           {/* Brand Column */}
           <div className="space-y-6">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="flex items-center gap-3">
+              {branding.logoUrl && (
+                <img src={branding.logoUrl} alt="" className="h-8 w-auto object-contain" />
+              )}
               <span className="font-display text-2xl font-black text-[var(--foreground)] tracking-tighter uppercase whitespace-nowrap">
                 {siteName}
               </span>

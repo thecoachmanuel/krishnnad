@@ -61,9 +61,14 @@ export function MobileMenu({ user, isAdmin, siteName, links }: MobileMenuProps) 
               className="fixed inset-y-0 right-0 z-[101] w-full max-w-[320px] bg-[var(--background)] border-l border-[var(--border)] p-8 flex flex-col md:hidden"
             >
               <div className="flex items-center justify-between mb-12">
-                <span className="font-display text-xl font-black uppercase tracking-tight text-[var(--accent)]">
-                   {siteName}
-                </span>
+                <div className="flex items-center gap-3">
+                  {logoUrl && (
+                    <img src={logoUrl} alt="" className="h-8 w-auto object-contain" />
+                  )}
+                  <span className="font-display text-xl font-black uppercase tracking-tight text-[var(--accent)]">
+                    {siteName}
+                  </span>
+                </div>
                 <Button 
                   variant="ghost" 
                   size="icon" 

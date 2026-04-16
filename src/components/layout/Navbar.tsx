@@ -50,7 +50,14 @@ export async function Navbar() {
        <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-10">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center gap-3">
+              {branding.logoUrl && (
+                <img 
+                  src={branding.logoUrl} 
+                  alt="" 
+                  className="h-10 w-auto object-contain"
+                />
+              )}
               <span className="font-display text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink animate-in fade-in slide-in-from-left duration-500">
                 {siteName}
               </span>
@@ -111,6 +118,7 @@ export async function Navbar() {
               user={user} 
               isAdmin={isAdmin} 
               siteName={siteName} 
+              logoUrl={branding.logoUrl}
               links={navLinks} 
             />
           </div>

@@ -176,6 +176,41 @@ export default function AdminSettingsPage() {
                         />
                      </div>
                      <div className="sm:col-span-2 space-y-2">
+                        <label className="text-[10px] font-black uppercase text-[var(--muted)] tracking-widest">Brand Logo</label>
+                        <div className="flex items-center gap-4 bg-[var(--background)] p-4 rounded-3xl border border-[var(--border)]">
+                           <div className="h-14 w-14 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] overflow-hidden flex items-center justify-center shrink-0">
+                              {sections.branding.logoUrl ? (
+                                 <img src={sections.branding.logoUrl} alt="Logo" className="h-full w-full object-contain" />
+                              ) : (
+                                 <ImageIcon className="h-6 w-6 text-[var(--muted)]" />
+                              )}
+                           </div>
+                           <div className="flex-1">
+                              <p className="text-[10px] font-bold text-[var(--muted)] uppercase mb-2">Display height will be optimized for Navbar/Footer</p>
+                              <div className="flex items-center gap-2">
+                                 <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="rounded-full h-9 px-4 text-xs"
+                                    onClick={() => openMediaModal('branding.logoUrl')}
+                                 >
+                                    Select Logo
+                                 </Button>
+                                 {sections.branding.logoUrl && (
+                                    <Button 
+                                       variant="ghost" 
+                                       size="sm" 
+                                       className="text-[var(--danger)] h-9 px-4 text-xs"
+                                       onClick={() => handleUpdate('branding', 'logoUrl', '')}
+                                    >
+                                       Remove
+                                    </Button>
+                                 )}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="sm:col-span-2 space-y-2">
                         <label className="text-[10px] font-black uppercase text-[var(--muted)] tracking-widest">Announcement Bar Notice</label>
                         <Input 
                           placeholder="Ex: New Doberman litter coming soon!"
