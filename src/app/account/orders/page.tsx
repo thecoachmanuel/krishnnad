@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 
 import { createClient } from "@/lib/supabase/client"
-import { format } from "date-fns" // Assuming date-fns is available or I'll use native Date
+// Using native Date for formatting
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = React.useState<any[]>([])
