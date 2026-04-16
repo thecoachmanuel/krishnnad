@@ -7,6 +7,7 @@ import { Eye, Heart, ShieldCheck, Award } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
+import { createClient } from "@/lib/supabase/client"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 
