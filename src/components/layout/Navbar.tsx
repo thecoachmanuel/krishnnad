@@ -1,9 +1,10 @@
 import * as React from "react"
 import Link from "next/link"
-import { Menu, Heart, User, LayoutDashboard, LogOut } from "lucide-react"
+import { Heart, User, LayoutDashboard, LogOut } from "lucide-react"
 
 import { Button } from "@/components/ui/Button"
 import { createClient } from "@/lib/supabase/server"
+import { MobileMenu } from "./MobileMenu"
 
 export async function Navbar() {
   const supabase = await createClient()
@@ -30,6 +31,13 @@ export async function Navbar() {
     isAdmin = profile?.role === "admin"
   }
 
+  const navLinks = [
+    { label: "Collection", href: "/dogs" },
+    { label: "Breeds", href: "/dogs?filter=breeds" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" }
+  ]
+
   return (
     <div className="flex flex-col">
        {/* Announcement Bar */}
@@ -43,18 +51,13 @@ export async function Navbar() {
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="font-display text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink">
+              <span className="font-display text-2xl font-black text-[var(--foreground)] uppercase tracking-tighter decoration-[var(--accent)] decoration-4 underline-offset-4 decoration-skip-ink animate-in fade-in slide-in-from-left duration-500">
                 {siteName}
               </span>
             </Link>
 
             <nav className="hidden md:flex items-center space-x-8">
-              {[
-                { label: "Collection", href: "/dogs" },
-                { label: "Breeds", href: "/dogs?filter=breeds" },
-                { label: "About", href: "/about" },
-                { label: "Contact", href: "/contact" }
-              ].map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
@@ -103,9 +106,13 @@ export async function Navbar() {
               </Button>
             </Link>
 
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-6 w-6" />
-            </Button>
+            {/* Mobile Navigation Trigger */}
+            <MobileMenu 
+              user={user} 
+              isAdmin={isAdmin} 
+              siteName={siteName} 
+              links={navLinks} 
+            />
           </div>
         </div>
       </header>
