@@ -4,21 +4,73 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { ArrowRight, ShieldCheck, Heart, Award, Star, MessageSquare } from "lucide-react"
+import { ArrowRight, ShieldCheck, Heart, Award, Star } from "lucide-react"
 
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { Button } from "@/components/ui/Button"
 import { DogCard } from "@/components/DogCard"
 import { TestimonialCard } from "@/components/ui/TestimonialCard"
-
-const FEATURED_DOGS = [
-   { id: "1", name: "Caesar", breed: "German Shepherd", price: 350000, imageUrl: "/images/german-shepherd.png", status: "Available" as const, age: "8 Weeks", gender: "Male" as const },
-   { id: "2", name: "Bella", breed: "Golden Retriever", price: 450000, imageUrl: "/images/golden-retriever.png", status: "Reserved" as const, age: "10 Weeks", gender: "Female" as const },
-   { id: "3", name: "Thor", breed: "Rottweiler", price: 400000, imageUrl: "/images/rottweiler.png", status: "Available" as const, age: "9 Weeks", gender: "Male" as const },
-]
+import { createClient } from "@/lib/supabase/client"
 
 export default function HomePage() {
+   const [featuredDogs, setFeaturedDogs] = React.useState<any[]>([])
+   const [heroContent, setHeroContent] = React.useState({
+      headline: "Bred for Excellence.",
+      subheadline: "Discover your perfect companion from our selection of world-class pedigrees. Raised with uncompromising standards, health-certified, and ready for their forever homes."
+   })
+   const [loading, setLoading] = React.useState(true)
+   const supabase = createClient()
+
+   React.useEffect(() => {
+      async function fetchHomeData() {
+         try {
+            // 1. Fetch Dynamic Settings
+            const { data: settingsData } = await supabase
+               .from('site_settings')
+               .select('*')
+               .in('key', ['heroHeadline', 'heroSubheadline'])
+
+            if (settingsData) {
+               const headline = settingsData.find(s => s.key === 'heroHeadline')?.value
+               const subheadline = settingsData.find(s => s.key === 'heroSubheadline')?.value
+               setHeroContent({
+                  headline: headline || "Bred for Excellence.",
+                  subheadline: subheadline || "Discover your perfect companion from our selection of world-class pedigrees."
+               })
+            }
+
+            // 2. Fetch Featured Dogs
+            const { data: dogsData, error } = await supabase
+               .from('dogs')
+               .select(`
+                  *,
+                  breed:breeds(name),
+                  images:dog_images(url)
+               `)
+               .eq('is_featured', true)
+               .limit(3)
+
+            if (error) throw error
+
+            if (dogsData) {
+               const transformed = dogsData.map(dog => ({
+                  ...dog,
+                  breed: (dog.breed as any)?.name || "Unknown Breed",
+                  imageUrl: dog.images?.[0]?.url || "/images/placeholder-dog.png"
+               }))
+               setFeaturedDogs(transformed)
+            }
+         } catch (err) {
+            console.error("Error fetching home data:", err)
+         } finally {
+            setLoading(false)
+         }
+      }
+
+      fetchHomeData()
+   }, [])
+
    return (
       <div className="flex min-h-screen flex-col bg-[var(--background)]">
          <Navbar />
@@ -39,14 +91,21 @@ export default function HomePage() {
                         <span className="text-[var(--accent)] font-bold">#1 Premium Breeder in Nigeria</span>
                      </div>
 
-                     <h1 className="font-display text-6xl font-bold leading-[1.1] tracking-tight text-[var(--foreground)] sm:text-7xl">
-                        Bred for <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-amber-200">Excellence.</span>
+                     <h1 className="font-display text-5xl font-bold leading-[1.1] tracking-tight text-[var(--foreground)] sm:text-7xl">
+                        {heroContent.headline.includes(".") ? (
+                           <>
+                              {heroContent.headline.split(".")[0]}.<br />
+                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-amber-200">
+                                 {heroContent.headline.split(".")[1]}
+                              </span>
+                           </>
+                        ) : (
+                           heroContent.headline
+                        )}
                      </h1>
 
                      <p className="max-w-xl text-lg text-[var(--muted)] leading-relaxed">
-                        Discover your perfect companion from our selection of world-class pedigrees.
-                        Raised with uncompromising standards, health-certified, and ready for their forever homes.
+                        {heroContent.subheadline}
                      </p>
 
                      <div className="flex flex-col sm:flex-row gap-4">
@@ -92,12 +151,11 @@ export default function HomePage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                         <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10">
-                           <h3 className="font-display text-xl font-bold text-white mb-1">Meet Bella</h3>
-                           <p className="text-sm text-white/70">World Class Golden Retriever Puppy</p>
+                           <h3 className="font-display text-xl font-bold text-white mb-1">Meet Shadow</h3>
+                           <p className="text-sm text-white/70">Premium Quality Selections</p>
                         </div>
                      </div>
 
-                     {/* Decorative Elements */}
                      <div className="absolute -top-12 -right-12 h-64 w-64 bg-[var(--accent)]/10 blur-[100px] -z-10" />
                      <div className="absolute -bottom-12 -left-12 h-64 w-64 bg-amber-500/10 blur-[100px] -z-10" />
                   </motion.div>
@@ -121,19 +179,33 @@ export default function HomePage() {
                   </Link>
                </div>
 
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {FEATURED_DOGS.map((dog, i) => (
-                     <motion.div
-                        key={dog.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                     >
-                        <DogCard {...dog} />
-                     </motion.div>
-                  ))}
-               </div>
+               {loading ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                     {[1, 2, 3].map((i) => (
+                        <div key={i} className="aspect-[4/5] w-full animate-pulse rounded-3xl bg-[var(--surface-2)]" />
+                     ))}
+                  </div>
+               ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                     {featuredDogs.length > 0 ? (
+                        featuredDogs.map((dog, i) => (
+                           <motion.div
+                              key={dog.id}
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: i * 0.1 }}
+                           >
+                              <DogCard {...dog} />
+                           </motion.div>
+                        ))
+                     ) : (
+                        <div className="col-span-full py-20 text-center border border-dashed border-[var(--border)] rounded-2xl">
+                           <p className="text-[var(--muted)]">No featured dogs available at the moment.</p>
+                        </div>
+                     )}
+                  </div>
+               )}
             </div>
          </section>
 
@@ -163,7 +235,7 @@ export default function HomePage() {
             </div>
          </section>
 
-         {/* Testimonials */}
+         {/* Testimonials section remains unchanged... */}
          <section id="testimonials" className="py-24 bg-[var(--surface-2)]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                <div className="mb-12 flex items-center gap-4">
@@ -196,10 +268,9 @@ export default function HomePage() {
          </section>
 
          {/* CTA Section */}
-         <section className="py-24">
+         <section className="py-24 border-t border-[var(--border)]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-               <div className="bg-[var(--accent)] rounded-[3rem] p-12 lg:p-24 text-center space-y-8 relative overflow-hidden">
-                  {/* Background Pattern */}
+               <div className="bg-[var(--accent)] rounded-[3rem] p-12 lg:p-24 text-center space-y-8 relative overflow-hidden shadow-2xl shadow-[var(--accent)]/20">
                   <div className="absolute inset-0 opacity-10 pointer-events-none">
                      <div className="absolute top-10 left-10 h-64 w-64 rounded-full border-[40px] border-white" />
                      <div className="absolute bottom-10 right-10 h-32 w-32 rounded-full border-[20px] border-white" />
